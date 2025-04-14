@@ -1,1 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Website Bestellung</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    form { max-width: 500px; margin: auto; background: #fff; padding: 1rem; border-radius: 10px; box-shadow: 0 2px 10px #ccc; }
+    input, textarea, button { width: 100%; margin: 10px 0; padding: 10px; }
+    button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <h2>📝 Website bestellen</h2>
+  <form id="orderForm">
+    <input type="text" id="name" placeholder="Dein Name" required>
+    <input type="email" id="email" placeholder="Deine E-Mail" required>
+    <textarea id="details" placeholder="Was brauchst du?" required></textarea>
+    <button type="submit">Absenden</button>
+    <p id="status"></p>
+  </form>
+
+  <script>
+    const webhookUrl = 'https://discord.com/api/webhooks/1361289289601777664/z_w8rWJuzWlpVQ1Uj70QzfB1GLZUMzWRi1O5BlyR0AIQEJaHg4kBasK8fAI17XzRIF4O'; // Hier dein Webhook einfügen
+
+    document.getElementById('orderForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const details = document.getElementById('details').value;
+
+      const content = `🆕 Neue Bestellung eingegangen:\n**Name:** ${name}\n**E-Mail:** ${email}\n**Details:**\n${details}`;
+
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+      });
+
+      if (response.ok) {
+        document.getElementById('status').textContent = "✅ Bestellung gesendet!";
+      } else {
+        document.getElementById('status').textContent = "❌ Fehler beim Senden.";
+      }
+    });
+  </script>
+
+</body>
+</html>
 
