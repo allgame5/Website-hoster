@@ -1,52 +1,126 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Website Bestellung</title>
   <style>
-    body { font-family: sans-serif; padding: 2rem; }
-    form { max-width: 500px; margin: auto; background: #fff; padding: 1rem; border-radius: 10px; box-shadow: 0 2px 10px #ccc; }
-    input, textarea, button { width: 100%; margin: 10px 0; padding: 10px; }
-    button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #d4fc79, #96e6a1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 1s ease-out;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    input, textarea {
+      padding: 0.8rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border 0.3s ease;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #4caf50;
+    }
+
+    button {
+      padding: 0.8rem 1rem;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #43a047;
+    }
+
+    .status {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
-
-  <h2>📝 Website bestellen</h2>
-  <form id="orderForm">
-    <input type="text" id="name" placeholder="Dein Name" required>
-    <input type="email" id="email" placeholder="Deine E-Mail" required>
-    <textarea id="details" placeholder="Was brauchst du?" required></textarea>
-    <button type="submit">Absenden</button>
-    <p id="status"></p>
-  </form>
+  <div class="container">
+    <h2>📝 Website bestellen</h2>
+    <form id="orderForm">
+      <input type="text" id="name" placeholder="Dein Name" required />
+      <input type="email" id="email" placeholder="Deine E-Mail" required />
+      <textarea id="details" rows="5" placeholder="Was brauchst du?" required></textarea>
+      <button type="submit">Bestellung absenden</button>
+      <div class="status" id="status"></div>
+    </form>
+  </div>
 
   <script>
-    const webhookUrl = 'https://discord.com/api/webhooks/1361289289601777664/z_w8rWJuzWlpVQ1Uj70QzfB1GLZUMzWRi1O5BlyR0AIQEJaHg4kBasK8fAI17XzRIF4O'; // Hier dein Webhook einfügen
+    const form = document.getElementById("orderForm");
+    const status = document.getElementById("status");
 
-    document.getElementById('orderForm').addEventListener('submit', async function(e) {
+    const webhookUrl = "https://discord.com/api/webhooks/1361289289601777664/z_w8rWJuzWlpVQ1Uj70QzfB1GLZUMzWRi1O5BlyR0AIQEJaHg4kBasK8fAI17XzRIF4O"; // 🔁 Hier einsetzen!
+
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const details = document.getElementById('details').value;
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const details = document.getElementById("details").value;
 
-      const content = `🆕 Neue Bestellung eingegangen:\n**Name:** ${name}\n**E-Mail:** ${email}\n**Details:**\n${details}`;
+      const message = `📬 **Neue Website-Bestellung**\n👤 Name: ${name}\n📧 E-Mail: ${email}\n📝 Details:\n${details}`;
 
-      const response = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content })
+      const res = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: message }),
       });
 
-      if (response.ok) {
-        document.getElementById('status').textContent = "✅ Bestellung gesendet!";
+      if (res.ok) {
+        status.textContent = "✅ Bestellung erfolgreich gesendet!";
+        form.reset();
+        status.style.color = "green";
       } else {
-        document.getElementById('status').textContent = "❌ Fehler beim Senden.";
+        status.textContent = "❌ Fehler beim Senden.";
+        status.style.color = "red";
       }
     });
   </script>
-
 </body>
 </html>
-
